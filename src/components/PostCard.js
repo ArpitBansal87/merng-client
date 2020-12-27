@@ -12,14 +12,6 @@ function PostCard({
 }) {
   const { user } = useContext(AuthContext);
 
-  function likePost() {
-    console.log("like posts clicked");
-  }
-
-  function commentOnPost() {
-    console.log("comentonPost clicked");
-  }
-
   return (
     <Card fluid>
       <Card.Content>
