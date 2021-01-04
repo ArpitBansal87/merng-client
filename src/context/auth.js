@@ -3,21 +3,30 @@ import jwtDecode from "jwt-decode";
 
 const initialState = {
   user: null,
+  trakt_access_token: null,
 };
 
 if (localStorage.getItem("jwtToken")) {
   const decodedToken = jwtDecode(localStorage.getItem("jwtToken"));
 
   if (decodedToken.exp * 1000 < Date.now()) {
-    localStorage.removeItem("jwtToken");
+    localStorage.clear();
   } else {
     initialState.user = decodedToken;
   }
 }
+
+if (localStorage.getItem("access_token")) {
+  const accessTokenValue = localStorage.getItem("access_token");
+  initialState.trakt_access_token = accessTokenValue;
+}
+
 const AuthContext = createContext({
   user: null,
+  trakt_access_token: null,
   login: (data) => {},
   logout: () => {},
+  loginTrakt: (data) => {},
 });
 
 function authReducer(state, action) {
@@ -31,6 +40,12 @@ function authReducer(state, action) {
       return {
         ...state,
         user: null,
+        trakt_access_token: null,
+      };
+    case "TRAKT_LOGIN":
+      return {
+        ...state,
+        trakt_access_token: action.payload,
       };
     default:
       return state;
@@ -50,14 +65,29 @@ function AuthProvider(props) {
 
   const logout = () => {
     localStorage.removeItem("jwtToken");
+    localStorage.removeItem("access_token");
     dispatch({
       type: "LOGOUT",
     });
   };
 
+  const loginTrakt = (access_token) => {
+    localStorage.setItem("access_token", access_token);
+    dispatch({
+      type: "TRAKT_LOGIN",
+      payload: access_token,
+    });
+  };
+
   return (
     <AuthContext.Provider
-      value={{ user: state.user, login, logout }}
+      value={{
+        user: state.user,
+        trakt_access_token: state.trakt_access_token,
+        login,
+        logout,
+        loginTrakt,
+      }}
       {...props}
     />
   );
