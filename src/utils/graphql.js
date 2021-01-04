@@ -21,3 +21,11 @@ export const FETCH_POSTS_QUERY = gql`
     }
   }
 `;
+
+export const GET_TRAKT_AUTH_URL = gql`
+  {
+    traktLogin {
+      url
+    }
+  }
+`;

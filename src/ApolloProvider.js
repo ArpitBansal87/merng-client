@@ -9,7 +9,7 @@ import {
 import { setContext } from 'apollo-link-context';
 
 const httpLink = createHttpLink({
-  uri: "https://pure-gorge-89923.herokuapp.com/",
+  uri: process.env.REACT_APP_GRAPHQL_URL,
 });
 
 const authLink = setContext(() => {
